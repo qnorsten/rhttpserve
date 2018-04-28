@@ -54,6 +54,17 @@ The server can then be started with:
 It defaults to listening on port 8090, but tries to read a
 value out of `PORT` if one is configured.
 
+### SSL/HTTPS support 
+To serve the server over SSL/HTTPS the following enviromental variable need to be defined
+
+    $ export RHTTPSERVE_CERT_NAME=
+this value should be the name or path to the crt and key files, excluding fileextension 
+e.g. 
+
+    $ export RHTTPSERVE_CERT_NAME=default #default.crt and #defualt.key in working dir
+    or
+    $ export RHTTPSERVE_CERT_NAME=/home/user/certs/default #/home/user/certs/default.crt and /home/user/certs/default.key 
+
 ### Client
 
 The client needs a private key and the host that the server
@@ -69,6 +80,12 @@ rhttpserve is listening on that server.
 Because you'll likely be running the client locally, it
 might be useful to store these values in your `.zshrc` or
 equivalent.
+## Custom url expiration time
+The url expiration time (default = 48 hours) can be customised with
+
+    $ export RHTTPSERVE_EXPIRATION_TIME=
+the expiration time can be defined in hours (h), mintues (m) and seconds(s) example formats:
+1h (1 hour from now), 1h2m (1 hour 2 minutes from now), 2m10s (2 minutes and 10 s from now)
 
 ## Usage
 
