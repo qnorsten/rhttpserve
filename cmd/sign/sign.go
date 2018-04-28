@@ -54,14 +54,21 @@ Example usage:
 		}
 
 		for _, arg := range args {
-			// Maybe make this configurable at some point.
-			expiresAt := time.Now().Add(48 * time.Hour)
-
+			// ExpirationTime, _ := time.ParseDuration(conf.ExpirationTime)
+			ExpirationTime, err := time.ParseDuration(conf.ExpirationTime)
+			
+			if err != nil {
+				fmt.Printf("Error setting url expiration time, double check the value of RHTTPSERVE_EXPIRATION_TIME\n")
+				common.ExitWithError(err)
+			}
+			expiresAt := time.Now().Add(ExpirationTime)
+			
+			
 			url, filename, err := generator.Generate(arg, expiresAt)
 			if err != nil {
 				common.ExitWithError(err)
 			}
-
+		
 			// Check that the URL that we just generated and the file that it
 			// points to is valid by issuing a HEAD request to the server.
 			if !skipCheck {
@@ -70,7 +77,7 @@ Example usage:
 					common.ExitWithError(err)
 				}
 			}
-
+			fmt.Println("Url expires at ", expiresAt.Format("2006-01-02 15:04:05"))
 			if curl {
 				fmt.Printf("curl -o '%s' '%s'\n", filename, url)
 			} else {
@@ -84,6 +91,7 @@ Example usage:
 type Config struct {
 	Host       string `env:"RHTTPSERVE_HOST,required"`
 	PrivateKey string `env:"RHTTPSERVE_PRIVATE_KEY,required"`
+	ExpirationTime string `env:"RHTTPSERVE_EXPIRATION_TIME,default=48h"`
 }
 
 // URLGenerator is a basic encapsulation of the information necessary to

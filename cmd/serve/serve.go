@@ -124,6 +124,7 @@ func (s *FileServer) ServeFile(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Link is no longer valid because expires_at is in the past"))
+		w.Write([]byte("\nLink expired at " + expiresAt.Format("2006-01-02 15:04:05")))
 		return
 	}
 
