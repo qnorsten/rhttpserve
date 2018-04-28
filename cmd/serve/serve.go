@@ -54,7 +54,19 @@ Example usage:
 			Handler: mux,
 		}
 		log.Printf("Serving on port %s", conf.Port)
-		log.Fatal(s.ListenAndServe())
+		if len(conf.CertName) > 0 {
+			log.Printf("Serving https")
+			// log.Printf(conf.CertName+string('.crt'))
+			var crtFile = conf.CertName + ".crt"
+			var keyFile = conf.CertName + ".key"
+			if cmd.Verbose {
+				log.Printf("Cert files %s & %s", crtFile, keyFile)
+			}
+			log.Fatal(s.ListenAndServeTLS(crtFile, keyFile))
+		} else {
+			log.Printf("Serving http")
+			log.Fatal(s.ListenAndServe())
+		}
 	},
 }
 
@@ -62,6 +74,7 @@ Example usage:
 type Config struct {
 	Port      string `env:"PORT,default=8090"`
 	PublicKey string `env:"RHTTPSERVE_PUBLIC_KEY,required"`
+	CertName string `env:"RHTTPSERVE_CERT_NAME,default=""`
 }
 
 // FileServer is a basic encapsulation of the necessary information to serve a
